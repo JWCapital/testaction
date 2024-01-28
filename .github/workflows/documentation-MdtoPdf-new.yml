@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  markdown_to_pdf_old:
+  markdown_to_pdf_python:
     runs-on: ubuntu-latest
   
     steps:
@@ -40,3 +40,4 @@ jobs:
                       pdf_file = os.path.join(output_dir, os.path.splitext(file)[0] + '.pdf')
                       print(f"Converting | File: {md_file} | Output: {pdf_file}")
                       convert_md_to_pdf(md_file, pdf_file)
+        shell: python
