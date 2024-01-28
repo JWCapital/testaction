@@ -1,10 +1,10 @@
-name: Convert Markdowns to PDFs
+name: Convert Markdowns to PDFs (Python)
 
 on:
   workflow_dispatch:
 
 jobs:
-  markdown_to_pdf:
+  markdown_to_pdf_old:
     runs-on: ubuntu-latest
   
     steps:
@@ -12,9 +12,9 @@ jobs:
         uses: actions/checkout@v4
   
       - name: Setup Node.js
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v4
         with:
-          node-version: '14'  # Specify the Node.js version
+          check-latest: false
   
       - name: Install markdown-pdf
         run: npm install -g markdown-pdf
