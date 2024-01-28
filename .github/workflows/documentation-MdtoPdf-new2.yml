@@ -45,4 +45,3 @@ jobs:
 
       - name: Convert Markdown to PDF
         run: python ./scripts/convert_md_to_pdf.py
-        shell: python
