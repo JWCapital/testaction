@@ -1,0 +1,19 @@
+# This file contains the list of Python packages required for the pbi-capacity-export project.
+
+# Used for making HTTP requests
+requests
+
+# Data manipulation library
+pandas
+
+# Microsoft Authentication Library for Python
+msal
+
+# Efficient columnar data structure for analytics
+pyarrow
+
+# A lightweight markup language for formatting plain text
+markdown
+
+# PDF generation library
+pdfkit
