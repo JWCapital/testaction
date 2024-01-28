@@ -1,0 +1,40 @@
+name: Convert Markdowns to PDFs 2
+
+on:
+  workflow_dispatch:
+
+jobs:
+  markdown_to_pdf:
+    runs-on: ubuntu-latest
+  
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+  
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'  # Specify the Node.js version
+  
+      - name: Install markdown-pdf
+        run: npm install -g markdown-pdf
+  
+      - name: Convert Markdown to PDF
+        run: |
+          input_dir="${GITHUB_WORKSPACE}/docs"
+          output_dir="${GITHUB_WORKSPACE}/docs/pdf"
+          mkdir -p "$output_dir"
+          find "$input_dir" -type f -name '*.md' | while IFS= read -r file; do
+            filename=$(basename -- "$file")
+            name="${filename%.*}"
+            echo "Converting | File: $file | Output: ${output_dir}/${name}.pdf"
+            markdown-pdf "$file" -o "$output_dir/${name}.pdf"
+          done
+  
+      # - name: Commit and Push changes
+      #   run: |
+      #     git config --global user.name "${{ github.actor }}"
+      #     git config --global user.email "${{ github.actor }}@users.noreply.github.com"
+      #     # Check for any changes
+      #     git add .
+      #     git diff --staged --exit-code --quiet || (git commit -m "Auto commit by GitHub Actions" && git push)
