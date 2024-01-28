@@ -2,6 +2,12 @@ name: Convert PUMLs to PNGs 2
 
 on:
   workflow_dispatch:
+    description: "Manually trigger the workflow"
+    inputs:
+      python-version:
+        description: 'Python version'
+        required: false
+        default: '3.12'  # This will use the latest 3.12.x version available
 
 jobs:
   plantuml_to_png:
