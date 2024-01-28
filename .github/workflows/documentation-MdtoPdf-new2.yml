@@ -1,4 +1,4 @@
-name: Convert Markdowns to PDFs (Python)
+name: Convert Markdowns to PDFs (Python) 2
 
 on:
   workflow_dispatch:
@@ -44,25 +44,5 @@ jobs:
         run: sudo apt-get install -y wkhtmltopdf
 
       - name: Convert Markdown to PDF
-        run: |
-          import os
-          import markdown
-          import pdfkit
-
-          def convert_md_to_pdf(md_file, pdf_file):
-              with open(md_file, 'r') as f:
-                  html_text = markdown.markdown(f.read())
-                  pdfkit.from_string(html_text, pdf_file)
-
-          input_dir = "${{ github.workspace }}/docs"
-          output_dir = "${{ github.workspace }}/docs/pdf"
-          os.makedirs(output_dir, exist_ok=True)
-
-          for root, dirs, files in os.walk(input_dir):
-              for file in files:
-                  if file.endswith(".md"):
-                      md_file = os.path.join(root, file)
-                      pdf_file = os.path.join(output_dir, os.path.splitext(file)[0] + '.pdf')
-                      print(f"Converting | File: {md_file} | Output: {pdf_file}")
-                      convert_md_to_pdf(md_file, pdf_file)
+        run: python ./scripts/convert_md_to_pdf.py
         shell: python

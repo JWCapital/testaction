@@ -1,0 +1,16 @@
+name: Setup Actions Running on Ubuntu
+
+on:
+  workflow_dispatch:
+
+
+jobs:
+  setup_ubuntu:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Update Ubuntu
+        run: sudo apt-get update

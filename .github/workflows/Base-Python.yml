@@ -1,0 +1,37 @@
+name: Setup Actions Python
+
+on:
+  workflow_dispatch:
+    inputs:
+      python-version:
+        description: 'Python version'
+        required: false
+        default: '3.12'  # This will use the latest 3.12.x version available
+
+jobs:
+  setup_python:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ github.event.inputs.python-version }}
+          cache: 'pip'
+          cache-dependency-path: 'requirements.txt'
+
+      - name: Upgrade pip
+        run: python -m pip install --upgrade pip
+
+      - run: pip install -r requirements.txt
+
+      - name: Cache Python dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
