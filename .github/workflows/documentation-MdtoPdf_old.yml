@@ -31,10 +31,3 @@ jobs:
             markdown-pdf "$file" -o "$output_dir/${name}.pdf"
           done
   
-      # - name: Commit and Push changes
-      #   run: |
-      #     git config --global user.name "${{ github.actor }}"
-      #     git config --global user.email "${{ github.actor }}@users.noreply.github.com"
-      #     # Check for any changes
-      #     git add .
-      #     git diff --staged --exit-code --quiet || (git commit -m "Auto commit by GitHub Actions" && git push)
