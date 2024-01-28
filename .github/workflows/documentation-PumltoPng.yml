@@ -18,27 +18,19 @@ jobs:
 
       - name: Render PlantUML Diagrams
         run: |
-          import os
-          import subprocess
+          output_dir="${GITHUB_WORKSPACE}/docs/images"
+          mkdir -p "$output_dir"
+          find "${GITHUB_WORKSPACE}/docs/diagrams" -type f -name '*.puml' | while IFS= read -r file; do
+            filename=$(basename -- "$file")
+            name="${filename%.*}"
+            echo "Rendering | File: $file | Output: ${output_dir}/${name}.png"
+            plantuml -tpng -o "$output_dir" "$file"
+          done
 
-          def render_puml_to_png(puml_file, png_file):
-              subprocess.run(["plantuml", "-tpng", "-o", os.path.dirname(png_file), puml_file], check=True)
-              print(f"Rendering | File: {puml_file} | Output: {png_file}")
-
-          input_dir = "${{ github.workspace }}/docs/diagrams"
-          output_dir = "${{ github.workspace }}/docs/images"
-          os.makedirs(output_dir, exist_ok=True)
-          
-          for root, dirs, files in os.walk(input_dir):
-              for file in files:
-                  if file.endswith(".puml"):
-                      puml_file = os.path.join(root, file)
-                      png_file = os.path.join(output_dir, os.path.splitext(file)[0] + '.png')
-                      render_puml_to_png(puml_file, png_file)
-
-      - name: Commit and Push changes
-        run: |
-          git config --global user.name "${{ github.actor }}"
-          git config --global user.email "${{ github.actor }}@users.noreply.github.com"
-          git add .
-          git diff --staged --exit-code --quiet || (git commit -m "Auto commit by GitHub Actions" && git push)
+      # - name: Commit and Push changes
+      #   run: |
+      #     git config --global user.name "${{ github.actor }}"
+      #     git config --global user.email "${{ github.actor }}@users.noreply.github.com"
+      #     # Check for any changes
+      #     git add .
+      #     git diff --staged --exit-code --quiet || (git commit -m "Auto commit by GitHub Actions" && git push)

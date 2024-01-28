@@ -6,55 +6,35 @@ on:
 jobs:
   markdown_to_pdf:
     runs-on: ubuntu-latest
-
+  
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v3
+  
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
         with:
-          python-version: '3.9'
-
-      - name: Cache Python dependencies
-        uses: actions/cache@v2
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-
-
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-
+          node-version: '14'  # Specify the Node.js version
+  
+      - name: Install markdown-pdf
+        run: npm install -g markdown-pdf
+  
       - name: Convert Markdown to PDF
         run: |
-          import os
-          import markdown
-          import pdfkit
-
-          def convert_md_to_pdf(md_file, pdf_file):
-              with open(md_file, 'r') as f:
-                  html_text = markdown.markdown(f.read())
-                  pdfkit.from_string(html_text, pdf_file)
-
-          input_dir = "${{ github.workspace }}/docs"
-          output_dir = "${{ github.workspace }}/docs/pdf"
-          os.makedirs(output_dir, exist_ok=True)
-
-          for root, dirs, files in os.walk(input_dir):
-              for file in files:
-                  if file.endswith(".md"):
-                      md_file = os.path.join(root, file)
-                      pdf_file = os.path.join(output_dir, os.path.splitext(file)[0] + '.pdf')
-                      print(f"Converting | File: {md_file} | Output: {pdf_file}")
-                      convert_md_to_pdf(md_file, pdf_file)
-
-      - name: Commit and Push changes
-        run: |
-            git config --global user.name "${{ github.actor }}"
-            git config --global user.email "${{ github.actor }}@users.noreply.github.com"
-            git add .
-            git diff --staged --exit-code --quiet || (git commit -m "Auto commit by GitHub Actions" && git push)
+          input_dir="${GITHUB_WORKSPACE}/docs"
+          output_dir="${GITHUB_WORKSPACE}/docs/pdf"
+          mkdir -p "$output_dir"
+          find "$input_dir" -type f -name '*.md' | while IFS= read -r file; do
+            filename=$(basename -- "$file")
+            name="${filename%.*}"
+            echo "Converting | File: $file | Output: ${output_dir}/${name}.pdf"
+            markdown-pdf "$file" -o "$output_dir/${name}.pdf"
+          done
+  
+      # - name: Commit and Push changes
+      #   run: |
+      #     git config --global user.name "${{ github.actor }}"
+      #     git config --global user.email "${{ github.actor }}@users.noreply.github.com"
+      #     # Check for any changes
+      #     git add .
+      #     git diff --staged --exit-code --quiet || (git commit -m "Auto commit by GitHub Actions" && git push)
