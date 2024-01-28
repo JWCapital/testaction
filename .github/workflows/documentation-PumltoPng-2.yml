@@ -1,15 +1,10 @@
-name: Setup Actions Python
+name: Convert PUMLs to PNGs 2
 
 on:
   workflow_dispatch:
-    inputs:
-      python-version:
-        description: 'Python version'
-        required: false
-        default: '3.12'  # This will use the latest 3.12.x version available
 
 jobs:
-  setup_python:
+  plantuml_to_png:
     runs-on: ubuntu-latest
 
     steps:
@@ -39,5 +34,8 @@ jobs:
       - name: Update Ubuntu
         run: sudo apt-get update
 
-      - name: Run Script
-        run: python ./scripts/sample.py
+      - name: Install plantuml
+        run: sudo apt-get install -y plantuml
+
+      - name: Convert Markdown to PDF
+        run: python ./scripts/convert_puml_to_png.py
