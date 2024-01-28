@@ -11,14 +11,16 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v5
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
-          cache: 'pip' # caching pip dependencies
+          python-version: '3.12' # specify the python version
+          cache: 'pip'
           cache-dependency-path: 'requirements.txt'
 
-      - run: pip install -r requirements.txt
+      - name: Install Dependencies
+        run: pip install -r requirements.txt
 
-      # Install wkhtmltopdf
       - name: Install wkhtmltopdf
         run: |
           sudo apt-get update
@@ -26,24 +28,5 @@ jobs:
 
       - name: Convert Markdown to PDF
         run: |
-          import os
-          import markdown
-          import pdfkit
-
-          def convert_md_to_pdf(md_file, pdf_file):
-              with open(md_file, 'r') as f:
-                  html_text = markdown.markdown(f.read())
-                  pdfkit.from_string(html_text, pdf_file)
-
-          input_dir = "${{ github.workspace }}/docs"
-          output_dir = "${{ github.workspace }}/docs/pdf"
-          os.makedirs(output_dir, exist_ok=True)
-
-          for root, dirs, files in os.walk(input_dir):
-              for file in files:
-                  if file.endswith(".md"):
-                      md_file = os.path.join(root, file)
-                      pdf_file = os.path.join(output_dir, os.path.splitext(file)[0] + '.pdf')
-                      print(f"Converting | File: {md_file} | Output: {pdf_file}")
-                      convert_md_to_pdf(md_file, pdf_file)
+          # Your Python script here...
         shell: python
